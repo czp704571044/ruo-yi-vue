@@ -180,3 +180,23 @@ aside {
     margin-bottom: 10px;
   }
 }
+
+
+
+.el-menu--popup-bottom-start {
+  margin-top: 0;
+}
+.submenu-title-noDropdown {
+  padding:  0 15px !important;
+}
+.el-menu.el-menu--horizontal {
+  border-bottom: none;
+}
+.el-menu {
+  display: flex;
+  width: 100vw;
+  text-align: center;
+  .nest-menu {
+    width: 10%;
+  }
+}

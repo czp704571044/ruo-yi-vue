@@ -1,100 +1,92 @@
 <template>
-  <div class="navbar">
-    <hamburger id="hamburger-container"
-               :is-active="sidebar.opened"
-               class="hamburger-container"
-               @toggleClick="toggleSideBar" />
+  <div style="display: flex;width:100%">
+    <div :class="{'has-logo':showLogo}"
+         :style="{ backgroundColor: settings.sideTheme === 'theme-dark' ? variables.menuBackground : variables.menuLightBackground, }"
+         style="width:10%">
+      <logo v-if="showLogo"
+            :collapse="isCollapse" />
+    </div>
+    <div class="navbar">
+      <top-nav id="topmenu-container"
+               class="topmenu-container"
+               v-if="topNav" />
 
-    <breadcrumb id="breadcrumb-container"
-                class="breadcrumb-container"
-                v-if="!topNav" />
-    <top-nav id="topmenu-container"
-             class="topmenu-container"
-             v-if="topNav" />
-
-    <div class="right-menu">
-      <template v-if="device!=='mobile'">
-        <search id="header-search"
-                class="right-menu-item" />
-
-        <el-tooltip content="源码地址"
-                    effect="dark"
-                    placement="bottom">
-          <ruo-yi-git id="ruoyi-git"
-                      class="right-menu-item hover-effect" />
-        </el-tooltip>
-
-        <el-tooltip content="文档地址"
-                    effect="dark"
-                    placement="bottom">
-          <ruo-yi-doc id="ruoyi-doc"
-                      class="right-menu-item hover-effect" />
-        </el-tooltip>
-
-        <screenfull id="screenfull"
-                    class="right-menu-item hover-effect" />
-
-        <el-tooltip content="布局大小"
-                    effect="dark"
-                    placement="bottom">
-          <size-select id="size-select"
-                       class="right-menu-item hover-effect" />
-        </el-tooltip>
-
-      </template>
-
-      <el-dropdown class="avatar-container right-menu-item hover-effect"
-                   trigger="click">
-        <div class="avatar-wrapper">
-          <img :src="avatar"
-               class="user-avatar">
-          <i class="el-icon-caret-bottom" />
-        </div>
-        <el-dropdown-menu slot="dropdown">
-          <router-link to="/user/profile">
-            <el-dropdown-item>个人中心</el-dropdown-item>
-          </router-link>
-          <el-dropdown-item @click.native="setting = true">
-            <span>布局设置</span>
-          </el-dropdown-item>
-          <el-dropdown-item divided
-                            @click.native="logout">
-            <span>退出登录</span>
-          </el-dropdown-item>
-        </el-dropdown-menu>
-      </el-dropdown>
+      <el-menu :default-active="activeMenu"
+               mode="horizontal"
+               :background-color="settings.sideTheme === 'theme-dark' ? variables.menuBackground : variables.menuLightBackground"
+               :text-color="settings.sideTheme === 'theme-dark' ? variables.menuColor : variables.menuLightColor"
+               :unique-opened="true"
+               :active-text-color="settings.theme">
+        <sidebar-item v-for="(route, index) in sidebarRouters"
+                      :key="route.path  + index"
+                      :item="route"
+                      :base-path="route.path" />
+      </el-menu>
+      <div class="right-menu">
+        <el-dropdown class="avatar-container right-menu-item hover-effect"
+                     trigger="click">
+          <div class="avatar-wrapper">
+            <img :src="avatar"
+                 class="user-avatar">
+            <i class="el-icon-caret-bottom" />
+          </div>
+          <el-dropdown-menu slot="dropdown">
+            <router-link to="/user/profile">
+              <el-dropdown-item>个人中心</el-dropdown-item>
+            </router-link>
+            <el-dropdown-item @click.native="setting = true">
+              <span>布局设置</span>
+            </el-dropdown-item>
+            <el-dropdown-item divided
+                              @click.native="logout">
+              <span>退出登录</span>
+            </el-dropdown-item>
+          </el-dropdown-menu>
+        </el-dropdown>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
-import Breadcrumb from '@/components/Breadcrumb'
+import { mapGetters, mapState } from 'vuex'
 import TopNav from '@/components/TopNav'
-import Hamburger from '@/components/Hamburger'
-import Screenfull from '@/components/Screenfull'
-import SizeSelect from '@/components/SizeSelect'
-import Search from '@/components/HeaderSearch'
-import RuoYiGit from '@/components/RuoYi/Git'
-import RuoYiDoc from '@/components/RuoYi/Doc'
+import Logo from "@/layout/components/Sidebar/Logo";
+import SidebarItem from "../components/Sidebar/SidebarItem";
+import variables from "@/assets/styles/variables.scss";
 
 export default {
   components: {
-    Breadcrumb,
     TopNav,
-    Hamburger,
-    Screenfull,
-    SizeSelect,
-    Search,
-    RuoYiGit,
-    RuoYiDoc
+    SidebarItem,
+    Logo
   },
   computed: {
+    ...mapState(["settings"]),
     ...mapGetters([
       'sidebar',
       'avatar',
-      'device'
+      'device',
+      "sidebarRouters"
     ]),
+    activeMenu () {
+      const route = this.$route;
+      const { meta, path } = route;
+      // if set path, the sidebar will highlight the path you set
+      if (meta.activeMenu) {
+        return meta.activeMenu;
+      }
+      return path;
+    },
+    showLogo () {
+      return this.$store.state.settings.sidebarLogo;
+    },
+    variables () {
+      return variables;
+    },
+    isCollapse () {
+      return false;
+    },
     setting: {
       get () {
         return this.$store.state.settings.showSettings
@@ -132,8 +124,19 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+::v-deep .el-submenu__icon-arrow {
+  display: none;
+}
+::v-deep .el-menu--popup-bottom-start {
+  margin-top: 0 !important;
+}
+::v-deep .el-menu--horizontal {
+  width: 100%;
+  left: 0px;
+}
 .navbar {
-  height: 50px;
+  width: 100%;
+  height: 56px;
   overflow: hidden;
   position: relative;
   background: #fff;
@@ -158,7 +161,7 @@ export default {
 
   .topmenu-container {
     position: absolute;
-    left: 50px;
+    left: 56px;
   }
 
   .errLog-container {
@@ -166,10 +169,30 @@ export default {
     vertical-align: top;
   }
 
+  .el-menu {
+    display: flex;
+    height: 56px;
+    div {
+      width: auto;
+      li {
+        padding: 0 15px !important;
+      }
+      a {
+        li.el-menu-item {
+          height: 56px !important;
+          line-height: 56px !important;
+          padding: 0 15px;
+        }
+      }
+    }
+  }
+
   .right-menu {
-    float: right;
     height: 100%;
-    line-height: 50px;
+    line-height: 56px;
+    position: absolute;
+    right: 0;
+    top: 0px;
 
     &:focus {
       outline: none;

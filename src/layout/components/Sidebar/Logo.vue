@@ -1,13 +1,28 @@
 <template>
-  <div class="sidebar-logo-container" :class="{'collapse':collapse}" :style="{ backgroundColor: sideTheme === 'theme-dark' ? variables.menuBackground : variables.menuLightBackground }">
+  <div class="sidebar-logo-container"
+       :class="{'collapse':collapse}"
+       :style="{ backgroundColor: sideTheme === 'theme-dark' ? variables.menuBackground : variables.menuLightBackground }">
     <transition name="sidebarLogoFade">
-      <router-link v-if="collapse" key="collapse" class="sidebar-logo-link" to="/">
-        <img v-if="logo" :src="logo" class="sidebar-logo" />
-        <h1 v-else class="sidebar-title" :style="{ color: sideTheme === 'theme-dark' ? variables.logoTitleColor : variables.logoLightTitleColor }">{{ title }} </h1>
+      <router-link v-if="collapse"
+                   key="collapse"
+                   class="sidebar-logo-link"
+                   to="/">
+        <img v-if="logo"
+             :src="logo"
+             class="sidebar-logo" />
+        <h1 v-else
+            class="sidebar-title"
+            :style="{ color: sideTheme === 'theme-dark' ? variables.logoTitleColor : variables.logoLightTitleColor }">{{ title }} </h1>
       </router-link>
-      <router-link v-else key="expand" class="sidebar-logo-link" to="/">
-        <img v-if="logo" :src="logo" class="sidebar-logo" />
-        <h1 class="sidebar-title" :style="{ color: sideTheme === 'theme-dark' ? variables.logoTitleColor : variables.logoLightTitleColor }">{{ title }} </h1>
+      <router-link v-else
+                   key="expand"
+                   class="sidebar-logo-link"
+                   to="/">
+        <img v-if="logo"
+             :src="logo"
+             class="sidebar-logo" />
+        <h1 class="sidebar-title"
+            :style="{ color: sideTheme === 'theme-dark' ? variables.logoTitleColor : variables.logoLightTitleColor }">{{ title }} </h1>
       </router-link>
     </transition>
   </div>
@@ -26,14 +41,14 @@ export default {
     }
   },
   computed: {
-    variables() {
+    variables () {
       return variables;
     },
-    sideTheme() {
+    sideTheme () {
       return this.$store.state.settings.sideTheme
     }
   },
-  data() {
+  data () {
     return {
       title: process.env.VUE_APP_TITLE,
       logo: logoImg
@@ -55,8 +70,8 @@ export default {
 .sidebar-logo-container {
   position: relative;
   width: 100%;
-  height: 50px;
-  line-height: 50px;
+  height: 56px;
+  line-height: 56px;
   background: #2b2f3a;
   text-align: center;
   overflow: hidden;
