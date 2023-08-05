@@ -1,7 +1,6 @@
 <template>
   <div v-if="!item.hidden">
 
-    <!-- 没有子节点，直接点击打开页面跳转 -->
     <template v-if="hasOneShowingChild(item.children,item) && (!onlyOneChild.children||onlyOneChild.noShowingChildren)&&!item.alwaysShow">
       <app-link v-if="onlyOneChild.meta"
                 :to="resolvePath(onlyOneChild.path, onlyOneChild.query)">
@@ -13,7 +12,6 @@
       </app-link>
     </template>
 
-    <!-- 有子节点，无法直接跳转 -->
     <el-submenu v-else
                 ref="subMenu"
                 :index="resolvePath(item.path)"
@@ -23,12 +21,56 @@
               :icon="item.meta && item.meta.icon"
               :title="item.meta.title" />
       </template>
-      <sidebar-item v-for="child in item.children"
-                    :key="child.path"
-                    :is-nest="true"
-                    :item="child"
-                    :base-path="resolvePath(child.path)"
-                    class="nest-menu" />
+      <div v-for="second in item.children"
+           :key="second.path">
+        <div v-if="!second.hidden">
+          <template v-if="hasOneShowingChild(second.children,second) && (!second.children||second.noShowingChildren)&&!second.alwaysShow">
+            <app-link class="first"
+                      v-if="second.meta"
+                      :to="resolvePath(second.path, second.query)">
+              <el-menu-item :index="resolvePath(second.path)"
+                            :class="{'submenu-title-noDropdown':!true}">
+                <item :icon="second.meta.icon||(second.meta&&second.meta.icon)"
+                      :title="second.meta.title" />
+              </el-menu-item>
+            </app-link>
+          </template>
+
+          <el-submenu v-else
+                      class="second"
+                      ref="subMenu"
+                      :index="resolvePath(second.path)"
+                      popper-append-to-body>
+            <template slot="title">
+              <item v-if="second.meta"
+                    :icon="second.meta && second.meta.icon"
+                    :title="second.meta.title" />
+              <!-- <el-menu-item-group title="标题"> -->
+
+              <div v-for="third in second.children"
+                   :key="third.path">
+                <div v-if="!third.hidden">
+                  <template>
+                    <app-link class="second"
+                              v-if="third.meta"
+                              :to="resolvePath(third.path, third.query)">
+                      <el-menu-item :index="resolvePath(third.path)"
+                                    :class="{'submenu-title-noDropdown':!true}">
+                        <item class="third"
+                              :icon="third.meta.icon||(third.meta&&child.third.icon)"
+                              :title="third.meta.title" />
+                      </el-menu-item>
+                    </app-link>
+                  </template>
+                </div>
+              </div>
+              <!-- </el-menu-item-group> -->
+            </template>
+
+          </el-submenu>
+        </div>
+      </div>
+
     </el-submenu>
   </div>
 </template>
@@ -107,3 +149,5 @@ export default {
   }
 }
 </script>
+<style lang="scss" scoped>
+</style>

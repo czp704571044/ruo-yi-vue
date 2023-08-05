@@ -15,7 +15,6 @@
                mode="horizontal"
                :background-color="settings.sideTheme === 'theme-dark' ? variables.menuBackground : variables.menuLightBackground"
                :text-color="settings.sideTheme === 'theme-dark' ? variables.menuColor : variables.menuLightColor"
-               :unique-opened="true"
                :active-text-color="settings.theme">
         <sidebar-item v-for="(route, index) in sidebarRouters"
                       :key="route.path  + index"
@@ -133,6 +132,9 @@ export default {
 ::v-deep .el-menu--horizontal {
   width: 100%;
   left: 0px;
+}
+::v-deep .el-submenu .second {
+  padding: 0;
 }
 .navbar {
   width: 100%;

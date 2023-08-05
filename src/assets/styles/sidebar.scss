@@ -90,7 +90,8 @@
 
     & .nest-menu .el-submenu>.el-submenu__title,
     & .el-submenu .el-menu-item {
-      min-width: $base-sidebar-width !important;
+      // min-width: $base-sidebar-width !important;
+      width:100%;
 
       &:hover {
         background-color: rgba(0, 0, 0, 0.06) !important;
